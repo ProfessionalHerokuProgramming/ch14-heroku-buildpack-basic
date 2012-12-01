@@ -1,0 +1,37 @@
+#!/bin/sh
+# usage: bin/compile <build-dir> <cache-dir>
+
+set -e
+
+indent() {
+    sed -u 's/^/ /'
+}
+
+BUILD_DIR=$1
+CACHE_DIR=$2
+
+VERSION=0.10
+FILE_NAME=blassic-$VERSION.tgz 
+DOWNLOAD_URL=http://professional-heroku-programming.s3.amazonaws.com/$FILE_NAME
+
+echo "-----> Using Blassic version $VERSION"
+(
+    set -e
+
+    # Check if Blassic is already cached
+    test -d $CACHE_DIR/blassic-$VERSION/bin && exit
+
+    mkdir -p $CACHE_DIR/blassic-$VERSION
+    cd $CACHE_DIR/blassic-$VERSION
+        
+    echo "-----> Fetching Blassic binaries"
+    curl -s -O -m 120 $DOWNLOAD_URL | indent
+    tar zxf $FILE_NAME
+    rm -f $FILE_NAME
+)
+
+# make runtime available
+cp $CACHE_DIR/blassic-$VERSION/bin/blassic $BUILD_DIR
+
+# clean the cache
+rm -rf $CACHE_DIR/*

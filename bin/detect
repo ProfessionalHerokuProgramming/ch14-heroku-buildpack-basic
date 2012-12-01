@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# this pack is valid for apps with app.bas in the root
+if [ -f $1/app.bas ]; then
+    echo "BASIC"
+    exit 0
+else
+    exit 1
+fi
